@@ -1,0 +1,7 @@
+attachments/*
+accounts/*
+!accounts/disabled/
+accounts/disabled/*
+texts/*
+!.gitkeep
+.env
