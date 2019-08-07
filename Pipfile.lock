@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "460c68ee01296bbb390236c2df5047ef06ac87f6ba3a4dde6adbdb8418313b84"
+            "sha256": "de49a36e51858d8e268c48f16c0184420a6219d0c092990db3008039d4a315b9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -25,5 +25,20 @@
             "version": "==0.10.3"
         }
     },
-    "develop": {}
+    "develop": {
+        "altgraph": {
+            "hashes": [
+                "sha256:d6814989f242b2b43025cba7161fc1b8fb487a62cd49c49245d6fd01c18ac997",
+                "sha256:ddf5320017147ba7b810198e0b6619bd7b5563aa034da388cea8546b877f9b0c"
+            ],
+            "version": "==0.16.1"
+        },
+        "pyinstaller": {
+            "hashes": [
+                "sha256:ee7504022d1332a3324250faf2135ea56ac71fdb6309cff8cd235de26b1d0a96"
+            ],
+            "index": "pypi",
+            "version": "==3.5"
+        }
+    }
 }
