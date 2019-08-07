@@ -1,7 +1,7 @@
-attachments/*
-accounts/*
-!accounts/disabled/
-accounts/disabled/*
-texts/*
+data/attachments/*
+data/accounts/*
+!data/accounts/disabled/
+data/accounts/disabled/*
+data/texts/*
 !.gitkeep
 .env
