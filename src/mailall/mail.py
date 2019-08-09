@@ -44,7 +44,7 @@ class Mail:
 
   @staticmethod
   def from_file(account_file, send_from):
-    with open(account_file) as f:
+    with open(account_file, 'r', encoding='utf-8') as f:
       account_data = map(
         lambda a: { x[0]:x[1] for x in a },
         map(

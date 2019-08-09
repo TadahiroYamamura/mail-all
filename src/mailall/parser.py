@@ -1,6 +1,6 @@
 from jinja2 import Template
 
-def parse(template_path, mail):
+def parse_mail(template_path, mail):
   with open(template_path, 'r', encoding='cp932') as f:
     template = Template(f.read())
   account = {
