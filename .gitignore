@@ -5,3 +5,5 @@ data/accounts/disabled/*
 data/texts/*
 !.gitkeep
 .env
+smtpconfig
+__pycache__/
