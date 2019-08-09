@@ -1,9 +1,9 @@
-data/attachments/*
-data/accounts/*
-!data/accounts/disabled/
-data/accounts/disabled/*
-data/texts/*
+src/data/attachments/*
+src/data/accounts/*
+!src/data/accounts/disabled/
+src/data/accounts/disabled/*
+src/data/texts/*
 !.gitkeep
 .env
-smtpconfig
+src/smtpconfig
 __pycache__/

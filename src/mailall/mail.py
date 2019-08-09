@@ -7,22 +7,20 @@ import os
 
 
 class Mail:
-  def __init__(self):
-    self.to = []
-    self.cc = []
-
+  def __init__(self, send_from):
+    self._accounts = []
+    self._send_from = send_from
 
   def message(self, subject, body):
     msg = EmailMessage()
     msg['Subject'] = subject
     msg.set_content(body)
-    msg['From'] = os.getenv('SEND_FROM')
-    msg['To'] = ', '.join(self.to)
-    msg['Cc'] = ', '.join(self.cc)
+    msg['From'] = self._send_from
+    msg['To'] = ', '.join(map(lambda a: a['address'], self.find_account_by_method('to')))
+    msg['Cc'] = ', '.join(map(lambda a: a['address'], self.find_account_by_method('cc')))
     msg['Date'] = formatdate()
     self._msg = msg
     return self
-
 
   def attach(self, attachment_path):
     mime = mimetypes.guess_type(attachment_path)[0]
@@ -35,28 +33,31 @@ class Mail:
                          filename=filename)
     return self
 
-
-  def send(self):
-    with SMTP(os.getenv('HOST'), os.getenv('PORT')) as smtp:
+  def send(self, host, port, user, password):
+    with SMTP(host, port) as smtp:
       smtp.starttls()
-      smtp.login(os.getenv('SEND_FROM'), os.getenv('PASSWORD'))
+      smtp.login(user, password)
       smtp.send_message(self._msg)
 
+  def find_account_by_method(self, method):
+    return list(filter(lambda x: x['method'].lower() == method, self._accounts))
 
   @staticmethod
-  def from_file(account_file):
+  def from_file(account_file, send_from):
     with open(account_file) as f:
-      accounts = filter(lambda a: a, f.read().split('\n'))
-    to_list = []
-    cc_list = []
-    for account in accounts:
-      a = account.split(':')
-      m = a[0].strip().lower()
-      if m == 'to':
-        to_list.append(a[1].strip())
-      elif m == 'cc':
-        cc_list.append(a[1].strip())
-    me = Mail()
-    me.to = to_list
-    me.cc = cc_list
+      account_data = map(
+        lambda a: { x[0]:x[1] for x in a },
+        map(
+          lambda a: zip(['method', 'name', 'address'], a),
+          map(
+            lambda a: a.split(':'),
+            filter (
+              lambda a: a,
+              f.read().split('\n')
+        ))))
+    filename = os.path.splitext(os.path.basename(account_file))[0]
+    me = Mail(send_from)
+    for a in account_data:
+      a['filename'] = filename
+      me._accounts.append(a)
     return me

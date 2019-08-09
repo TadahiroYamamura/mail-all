@@ -1,27 +1,42 @@
 from glob import glob
 import os
+import re
 
 import dotenv
 
-from mailall import Mail
+import mailall
 
 
 def main():
   dotenv.load_dotenv('smtpconfig')
-  mails = map(lambda path: Mail.from_file(path), glob('data/accounts/*.txt'))
+  mails = map(
+    lambda path: mailall.Mail.from_file(path, os.getenv('FROM_HEADER')),
+    glob('data/accounts/*.txt'))
+
+  folder = 'data/texts'
+  extension = '.txt'
+  mail_template = target_mail_template(folder, extension)
+  subject = re.sub('#.*$', '', mail_template)
+
+  for mail in mails:
+    body_text = mailall.parse(os.path.join(folder, mail_template + extension), mail)
+    mail.message(subject, body_text)
+    for atch in glob('data/attachments/*'):
+      mail.attach(atch)
+    mail.send(
+      os.getenv('HOST'),
+      os.getenv('PORT'),
+      os.getenv('MAIL_USER'),
+      os.getenv('PASSWORD'))
+
+
+def target_mail_template(folder, extension):
   print()
   print('【使用可能なメール文】')
-  for txt in glob('data/texts/*.txt'):
-    print(os.path.basename(txt)[:-4])
+  for txt in glob(os.path.join(folder, '*' + extension)):
+    print(os.path.basename(txt)[:len(extension) * -1])
   print()
-  subject = input('どれを送信しますか？：')
-  with open(os.path.join('data/texts', subject + '.txt')) as f:
-    body_message = f.read()
-  mails = map(lambda m: m.message(subject, body_message), mails)
-  for atch in glob('data/attachments/*'):
-    mails = map(lambda m: m.attach(atch), mails)
-  for m in mails:
-    m.send()
+  return input('どれを送信しますか？：')
 
 
 if __name__ == '__main__':
